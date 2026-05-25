@@ -439,7 +439,7 @@ function buildSections(){
   if(hasPhys){
     links.push({id:'goal',t:'목표 평가'});
     sec.push(`<section id="goal"><div class="shead"><span class="n">${nn()}</span><h2>목표 기록 평가</h2>
-      <p>목표 거리·시간을 입력하면 이번 운동이 그 목표에 적절했는지 코치 관점으로 평가하고, 목표용 훈련 페이스를 제시합니다.</p></div>
+      <p>목표 거리·시간을 입력하면 이번 운동이 그 목표에 적절했는지 코치 관점으로 평가하고, 목표용 훈련 페이스를 제시합니다. 고강도 훈련을 수행할수록 정확한 평가가 가능합니다. </p></div>
       <div class="card" id="goalcard">
         <div class="goal-input">
           <div class="seg" id="goaldist">
@@ -998,11 +998,11 @@ function renderGoal(P,Dist,sec){
   const A=[];
   const assessable=P.conf!=='none';
   const dpct=(curT-sec)/sec;
-  if(!assessable)A.push({t:'none',x:`<b>체력 수준</b> — 이 세션에는 고강도(역치 이상) 지속 자극이 없어 <b style="color:var(--warn)">현재 체력(VDOT)을 신뢰성 있게 추정할 수 없습니다.</b> 목표 달성 가능성 판단은 보류합니다 — 대회·템포·인터벌 기록으로 평가하세요.`});
-  else if(dpct<=-0.01)A.push({t:'good',x:`<b>체력 수준</b> — 현재 추정 ${fmtTime(curT)}로 이미 목표(${fmtTime(sec)}) 이상의 체력입니다 (현재 VDOT ${P.VDOT.toFixed(1)} ≥ 필요 ${gV.toFixed(1)}).`});
-  else if(dpct<=0.02)A.push({t:'good',x:`<b>체력 수준</b> — 현재 추정 ${fmtTime(curT)}로 목표(${fmtTime(sec)})에 거의 도달했습니다.`});
-  else if(dpct<=0.06)A.push({t:'warn',x:`<b>체력 수준</b> — 현재 추정 ${fmtTime(curT)}, 목표보다 약 ${fmtTime(curT-sec)} 부족 (VDOT ${(gV-P.VDOT).toFixed(1)}p 향상 필요).`});
-  else A.push({t:'bad',x:`<b>체력 수준</b> — 현재 추정 ${fmtTime(curT)}, 목표까지 약 ${fmtTime(curT-sec)} 격차가 큽니다 (VDOT ${(gV-P.VDOT).toFixed(1)}p ↑).`});
+  if(!assessable)A.push({t:'none',x:`<b>훈련 수준</b> — 이 세션에는 고강도(역치 이상) 지속 자극이 없어 <b style="color:var(--warn)">현재 체력(VDOT)을 신뢰성 있게 추정할 수 없습니다.</b> 목표 달성 가능성 판단은 보류합니다 — 대회·템포·인터벌 기록으로 평가하세요.`});
+  else if(dpct<=-0.01)A.push({t:'good',x:`<b>훈련 수준</b> — 현재 추정 ${fmtTime(curT)}로 이미 목표(${fmtTime(sec)}) 이상의 체력입니다 (현재 VDOT ${P.VDOT.toFixed(1)} ≥ 필요 ${gV.toFixed(1)}).`});
+  else if(dpct<=0.02)A.push({t:'good',x:`<b>훈련 수준</b> — 현재 추정 ${fmtTime(curT)}로 목표(${fmtTime(sec)})에 거의 도달했습니다.`});
+  else if(dpct<=0.06)A.push({t:'warn',x:`<b>훈련 수준</b> — 현재 추정 ${fmtTime(curT)}, 목표보다 약 ${fmtTime(curT-sec)} 부족 (VDOT ${(gV-P.VDOT).toFixed(1)}p 향상 필요).`});
+  else A.push({t:'bad',x:`<b>훈련 수준</b> — 현재 추정 ${fmtTime(curT)}, 목표까지 약 ${fmtTime(curT-sec)} 격차가 큽니다 (VDOT ${(gV-P.VDOT).toFixed(1)}p ↑).`});
   if(workPace){
     if(workPace<gp.R*0.99)A.push({t:'warn',x:`<b>핵심 강도</b> — 주 노력 ${fmtPace(workPace)}/km가 목표 R페이스(${fmtPace(gp.R)})보다도 빠릅니다. 이 목표엔 과도 — 순수 스피드 목적이 아니라면 강도를 낮추는 편이 안전합니다.`});
     else if(workPace<gp.T)A.push({t:'good',x:`<b>핵심 강도</b> — 주 노력 ${fmtPace(workPace)}/km는 목표 I(${fmtPace(gp.I)})~T(${fmtPace(gp.T)}) 영역. VO₂max·역치 자극으로 목표에 적합합니다.`});
@@ -1017,7 +1017,7 @@ function renderGoal(P,Dist,sec){
     const sv=smooth(valid.map(r=>r.v),9);let tM=0;
     for(let i=1;i<valid.length;i++){if(sv[i]){const pp=1000/sv[i];if(Math.abs(pp-gp.M)/gp.M<0.05)tM+=clamp(valid[i].t-valid[i-1].t,0,5)}}
     const durMin=S.moving/60,need=Dist>=42000?90:70;
-    if(tM>=420)A.push({t:'good',x:`<b>특이성</b> — 목표 마라톤 페이스(${fmtPace(gp.M)}) 부근에서 ${fmtTime(tM)} 누적되어 특이적 자극이 있습니다.`});
+    if(tM>=420)A.push({t:'good',x:`<b>특이성</b> — 목표 장거리 페이스(${fmtPace(gp.M)}) 부근에서 ${fmtTime(tM)} 누적되어 특이적 자극이 있습니다.`});
     else A.push({t:'warn',x:`<b>특이성</b> — 목표 ${distNm}용 M페이스(${fmtPace(gp.M)}) 지속·장거리 자극이 부족합니다 (M부근 누적 ${fmtTime(tM)}, 세션 길이 ${Math.round(durMin)}분 · 권장 ${need}분 이상). 이 세션은 스피드/VO₂max 성격이에요.`});
   }
   const tones=A.slice(1).map(a=>a.t);
